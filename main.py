@@ -43,7 +43,7 @@ class hackernewsUpvoter():
         more = self.driver.find_elements_by_class_name("morelink")
         more.click()
 
-bot = hackernewsUpvoter("username here", "password here")
+bot = hackernewsUpvoter(input(), input())
 
 for i in range(3):
     bot.sign_in()
