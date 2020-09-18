@@ -4,17 +4,18 @@ import time
 import random
 
 PATH = "C:\\Program Files (x86)\\chromedriver.exe"
+destination = "https://news.ycombinator.com/"
 
 class hackernewsUpvoter():
-    def __init__(self, username, password):
+    def __init__(self, username, password, website):
         self.driver = webdriver.Chrome(PATH) 
         self.username = username
         self.password = password
-    
-    def sign_in(self):
+        self.website = website
 
-        # Go to hackernews's website
-        self.driver.get("https://news.ycombinator.com/login")
+    def sign_in(self, login_page="https://news.ycombinator.com/login"):
+         # Go to hackernews's website
+        self.driver.get(login_page)
         time.sleep(2)
 
         # Enter username  
@@ -30,25 +31,31 @@ class hackernewsUpvoter():
         password.send_keys(Keys.RETURN)
     
     def upvoter(self):
-        self.driver.get("https://news.ycombinator.com/")
         upvoteButtons = self.driver.find_elements_by_class_name("votearrow")
 
         # Click every upvote buttons in the page 
         for button in upvoteButtons:
-            button.click()
-            time.sleep(1)
+            try: 
+                button.click()
+                time.sleep(1)
+            except: 
+                print("The upvote button wasn't clickable")
+                pass
         
+    def goto_page(self, page):
+        self.driver.get("https://news.ycombinator.com/news?p={}".format(page))
+
     def next_page(self):
-        self.driver.get("https://news.ycombinator.com/")
         more = self.driver.find_elements_by_class_name("morelink")
-        more.click()
+        more[0].click()
 
-bot = hackernewsUpvoter(input(), input())
+bot = hackernewsUpvoter(input(), input(), destination)
+bot.sign_in()
 
-for i in range(3):
-    bot.sign_in()
+for i in range(3,5):
     bot.upvoter() 
-    bot.next_page()
+    bot.goto_page(i)
+    time.sleep(random.randrange(300,500)/100)
 
 
 
